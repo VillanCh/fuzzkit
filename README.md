@@ -1,4 +1,4 @@
-# Scalpel - 针对 Payload 的 Fuzz 模块：批量生成 Payload 的 Fuzz 版本
+# Scalpel - 针对 Payload 的 Fuzz 模块：批量生成 Payload 的 Fuzz 版本的模板系统
 
 ## 功能：
 
