@@ -94,7 +94,8 @@ class ScalpelTest(unittest.case.TestCase):
                           enumt=['1','2','5','6'],
                           enumts=['7','a','c','6'],
                           xxx=['c','e3','adf','xss'],
-                          border='Fuckin')
+                          border='Fuckin',
+                          random_every_time=True)
         table = scalpel.variable_table
         self.assertIsInstance(table['asdf'], SVariable)
         print table
@@ -106,6 +107,17 @@ class ScalpelTest(unittest.case.TestCase):
         for i in scalpel.payloads:
             print i
 
+    #----------------------------------------------------------------------
+    def test_empty_template(self):
+        """"""
+        print('Test A Empty Tamplate')
+        scal = Scalpel(template='adsfadfasdfad')
+        
+        for i in scal.payloads:
+            print i
+            
+        print("Test Emtpy Tamplate Success!")
+        
 
 if __name__ == '__main__':
     unittest.main()

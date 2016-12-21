@@ -1,4 +1,4 @@
-# Scalpel - 针对 Payload 的 Fuzz 模块：批量生成 Payload 的 Fuzz 版本的模板系统
+# Scalpel（手术刀） - 批量生成特定 Payload 的 Fuzz 版本的模板系统
 
 ## 功能：
 
@@ -6,12 +6,22 @@
 * （render）针对指定模板标签进行渲染（随机值or定制随机）
 * 支持多个参数的交叉渲染
 
-## 模板标签定义：
+##基本概念与定义
+
+### 目的
+在漏洞挖掘中经常会出现需要对某一个点（边界，或者其他点）进行 Fuzz 测试，或者你使用 Burpsuite 或者是凭经验总结自己的字典，进行手动测试，难免出现测试不全的问题（疏忽某些特殊字符或特殊编码形式），本工具的功能其实非常简单：
+	
+* 任何位置
+* 任何随机（单次随机与每次随机都可以支持）
+* 任何字符
+* 任何编码
+
+定制与自动生成原 Payload 的各种 Fuzz 版本测试 WAF 的健壮性。
+
+### 模板标签定义：
 
 模板变量标记：
 
-	__SCALPEL_S__
-	__SCALPEL_E__
 	{[{
 	}]}
 
@@ -40,8 +50,8 @@
 
 #### 模板变量开始  
 
-* `__SCALPEL_S__` or `{[{` 开始模板变量值
-* `__SCALPEL_E__` or `}]}` 结束模板变量值
+* `{[{` 开始模板变量值
+* `}]}` 结束模板变量值
 
 
 #### 内置模板
@@ -128,3 +138,64 @@
 * `X(tag)`
 	* X：表明这个模板变量是指定用户输入的
 	* tag：模板变量名称
+
+## 基础用法 Quick Start
+
+要素 ： 
+
+1. 一个已知的 Payload 模板  
+2. 模板需要渲染的位置标记
+3. （Option）标记位置需要渲染的值
+
+示例：  
+模板`{[{X(border)}]}<scr{[{ENUM(xxx)}]}ipt{[{N(asdf){444,997}}]}></scr{[{ENUM(enumt)}]}ip{[{ENUM(enumts)}]}t>`
+
+        scalpel = Scalpel(template='{[{X(border)}]}<scr{[{ENUM(xxx)}]}ipt{[{N(asdf){444,997}}]}></scr{[{ENUM(enumt)}]}ip{[{ENUM(enumts)}]}t>',
+                          enumt=['1','2','5','6'],
+                          enumts=['7','a','c','6'],
+                          xxx=['c','e3','adf','xss'],
+                          border='Fuckin')
+        for i in scalpel.payloads:
+            print i
+
+运行结果：
+
+	Fuckin<scrcipt704></scr1ip7t>
+	Fuckin<scrcipt548></scr1ipat>
+	Fuckin<scrcipt641></scr1ipct>
+	Fuckin<scrcipt762></scr1ip6t>
+	Fuckin<scre3ipt980></scr1ip7t>
+	Fuckin<scre3ipt960></scr1ipat>
+	Fuckin<scre3ipt913></scr1ipct>
+	Fuckin<scre3ipt524></scr1ip6t>
+	Fuckin<scradfipt549></scr1ip7t>
+	Fuckin<scradfipt871></scr1ipat>
+	Fuckin<scradfipt507></scr1ipct>
+	Fuckin<scradfipt496></scr1ip6t>
+	Fuckin<scrxssipt679></scr1ip7t>
+	Fuckin<scrxssipt555></scr1ipat>
+	Fuckin<scrxssipt541></scr1ipct>
+	Fuckin<scrxssipt524></scr1ip6t>
+	...
+	...
+	...
+	Fuckin<scradfipt952></scr6ipct>
+	Fuckin<scradfipt871></scr6ip6t>
+	Fuckin<scrxssipt447></scr6ip7t>
+	Fuckin<scrxssipt982></scr6ipat>
+	Fuckin<scrxssipt887></scr6ipct>
+	Fuckin<scrxssipt771></scr6ip6t>
+
+根据观察：
+
+* X 标记处被替换成指定值
+* N 标记处被替换成指定大小区间的数字
+* ENUM 标记处被生成多个 Payload 遍历出来
+* 多个 ENUM 的时候，所有的组合都会被生成
+
+## 拓展
+### TODO LIST：
+
+1. 提供内置 FUZZ 数据库
+2. 更高级的标签系统封装让模板看起来不太臃肿
+3. 针对 WEB 的边界分析 
