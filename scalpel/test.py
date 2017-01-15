@@ -117,6 +117,19 @@ class ScalpelTest(unittest.case.TestCase):
             print i
             
         print("Test Emtpy Tamplate Success!")
+    
+    #----------------------------------------------------------------------
+    def test_range_genchar(self):
+        """"""
+        print('Test EVAL ENUM')
+        param = {}
+        param['name'] = map(chr, range(0, 20))
+        sclpl = Scalpel('<script>alert({[{ENUM(name)}]}1)</script>', **param)
+        
+        for i in sclpl.payloads:
+            print i
+        print('Test EVAL GEN SUCCESS')
+        
         
 
 if __name__ == '__main__':

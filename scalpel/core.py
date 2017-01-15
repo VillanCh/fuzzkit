@@ -166,6 +166,7 @@ class Scalpel(object):
         def render_enums(ret):
             result = []
             def render(result, ret, depth, tmp):
+            #while True:
                 if depth == len(ret):
                     return
                 else:
