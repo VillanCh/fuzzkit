@@ -9,6 +9,10 @@
 import unittest
 import types
 import abc
+from . import data
+from . import regs
+
+from g3ar.utils.iter_utils import iter_mix
 
 ########################################################################
 class TagBase(object):
@@ -110,18 +114,75 @@ class TagBase(object):
     def id(self):
         """"""
         return self._name
-    
+
 
 ########################################################################
-class Template(object):
+class TagRender(object):
     """"""
 
     #----------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, orig):
         """Constructor"""
         
+        self._orig = orig
+        
+        self._replace_table = {}
+        self._replace_table_with_wraper = {}
+    
+    #----------------------------------------------------------------------
+    def feed(self, raw, tag, wraperable=False):
+        """"""
+        assert isinstance(raw, types.StringTypes)
+        
+        if wraperable:
+            self._replace_table_with_wraper[raw] = tag
+            self._replace_keys_with_wraper = self._replace_table_with_wraper.keys()
+        else:
+            self._replace_table[raw] = tag
+            self._replace_keys = self._replace_table.keys()
+    
+    #----------------------------------------------------------------------
+    def _render_no_wraper(self):
+        """"""
+        _ksn = self._replace_table.values()
+        _ksn = tuple(_ksn)
+        if _ksn == tuple():
+            raise GeneratorExit
+        nw_items = iter_mix(*_ksn)
+        for _i in nw_items:
+            _ret = self._orig
+            for i in range(len(self._replace_table)):
+                _ret = _ret.replace(self._replace_keys[i], _i[i])
+            yield _ret
+    
+    #----------------------------------------------------------------------
+    def _render_wraper(self):
+        """"""
+        _ks = self._replace_table_with_wraper.values()
+        _ks = tuple(_ks)
+        if _ks == tuple():
+            w_items = []
+        else:   
+            w_items = iter_mix(*_ks)
+        for _i in w_items:
+            for _orig in self._render_no_wraper():
+                for payload in range(len(self._replace_table_with_wraper)):
+                    _orig = _orig.replace(self._replace_keys_with_wraper, self._wrap(_i))
+                yield _orig
+        else:
+            for _orig in self._render_no_wraper():
+                yield _orig
+    
+    #----------------------------------------------------------------------
+    def _wrap(self, i):
+        """"""
+        return regs.WRAPER_S + i + regs.WRAPER_E
         
     
+    #----------------------------------------------------------------------
+    def render(self):
+        """"""
+        return self._render_wraper()
     
 
 if __name__ == '__main__':

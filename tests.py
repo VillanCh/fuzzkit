@@ -13,6 +13,7 @@ import types
 from scalpeln.lib import regs
 from scalpeln.lib import parser
 from scalpeln.lib import taglib
+from scalpeln.lib import data
 
 
 ########################################################################
@@ -72,7 +73,47 @@ class ScalpelTester(unittest.case.TestCase):
             _l = len(i)
             self.assertTrue(_l >= 5 and _l <= 7)         
             
-            
+    #----------------------------------------------------------------------
+    def test_parsetag_by_reg(self):
+        """"""
+        _l = [
+            'X(xxx)',
+            "ENUM(sdsf)",
+            'C(s)',
+            'S',
+            "N(asd){3}",
+            "NS{2}",
+            "NS{3,6}",
+            "NS(){4}",
+            'NC(){5,7}'
+        ]
+        
+        for i in _l:
+            _lis = re.findall(regs.TAG_PATTERN, i).pop()
+            print(_lis)
+            self.assertEqual(11, len(_lis))
+    
+    #----------------------------------------------------------------------
+    def test_parse(self):
+        """"""
+        self.assertEqual(len(data.TAG_LIST), len(parser.TAG_CLASS_TABLE))
+        
+        raw = 'asdfasdfaHHHHHH_SX(asd){1,3}HHHHHH_EsdfaaM<L:?<"OP{IO"P{K:HKJ}}>>dfa'
+        #print re.findall(regs.TEMPLATE_PATTERN, raw)
+        for i in re.findall(regs.TEMPLATE_PATTERN, raw):
+            print i
+    
+    #----------------------------------------------------------------------
+    def test_render(self):
+        """"""
+        render = parser.parse_template('ad_S_SENUM(tt)_E_Efausdg_S_SS(tag){4}_E_Efad_S_SX(x1)_E_Efk_S_SENUM(rag)_E_Ealhsidf',
+                                       x1='V!LL$NNNSDF^%%&^$$$$^',
+                                       rag=data.ASCII_START_128_BASE,
+                                       tt=range(666))
+        
+        for i in render.render():
+            pass
+        
         
 
 if __name__ == '__main__':
