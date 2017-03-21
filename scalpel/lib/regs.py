@@ -8,11 +8,11 @@
 
 from . import data
 
-VULNUS_START = '_S_S'
-VULNUS_END = '_E_E'
+VULNUS_START = data.VULNUS_START
+VULNUS_END = data.VULNUS_END
 
-WRAPER_S = 'VULNUS_S'
-WRAPER_E = 'VULNUS_E'
+WRAPER_S = data.WRAPER_S
+WRAPER_E = data.WRAPER_E
 
 EXTRACT_PATTERN = VULNUS_START + '(.*)' + VULNUS_END
 
@@ -25,7 +25,8 @@ _PARSE_PARAMS = "(\{(([0-9]+)(,([ ]+)?([0-9]+)?)?)\})"
 _SUFFIX = "(\:([a-zA-Z0-9]+))"
 ####################################################################################
 
-TAG_PATTERN = "(" + '|'.join(data.TAG_LIST) + ")" + _PARSE_TAG + '?' + _PARSE_PARAMS + '?' + _SUFFIX + "?"
+TAG_PATTERN = "(" + '|'.join(data.TAG_LIST) + ")" + _PARSE_TAG + '?' + _PARSE_PARAMS + '?' +\
+    _SUFFIX + "?"
 TEMPLATE_PATTERN = "((" + VULNUS_START + ")" + TAG_PATTERN + "(" + VULNUS_END + "))"
 
 

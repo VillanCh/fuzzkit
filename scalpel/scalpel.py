@@ -18,7 +18,7 @@ class Scalpel(object):
     """"""
 
     #----------------------------------------------------------------------
-    def __init__(self, ):
+    def __init__(self, raw, keyword):
         """Constructor"""
         
         

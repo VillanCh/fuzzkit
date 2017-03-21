@@ -10,10 +10,10 @@ import unittest
 import re
 import types
 
-from scalpeln.lib import regs
-from scalpeln.lib import parser
-from scalpeln.lib import taglib
-from scalpeln.lib import data
+from scalpel.lib import regs
+from scalpel.lib import parser
+from scalpel.lib import taglib
+from scalpel.lib import data
 
 
 ########################################################################
@@ -109,10 +109,15 @@ class ScalpelTester(unittest.case.TestCase):
         render = parser.parse_template('ad_S_SENUM(tt)_E_Efausdg_S_SS(tag){4}_E_Efad_S_SX(x1)_E_Efk_S_SENUM(rag)_E_Ealhsidf',
                                        x1='V!LL$NNNSDF^%%&^$$$$^',
                                        rag=data.ASCII_START_128_BASE,
-                                       tt=range(666))
+                                       tt=range(333))
         
-        for i in render.render():
-            pass
+        gen = render.render()
+        for i in range(666):
+            gen.next()
+    
+    #----------------------------------------------------------------------
+    def test_scalpel_instance(self):
+        """"""
         
         
 
