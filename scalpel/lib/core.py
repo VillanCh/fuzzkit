@@ -166,8 +166,8 @@ class TagRender(object):
             w_items = iter_mix(*_ks)
         for _i in w_items:
             for _orig in self._render_no_wraper():
-                for payload in range(len(self._replace_table_with_wraper)):
-                    _orig = _orig.replace(self._replace_keys_with_wraper, self._wrap(_i))
+                for index in range(len(self._replace_table_with_wraper)):
+                    _orig = _orig.replace(self._replace_keys_with_wraper[index], self._wrap(_i[index]))
                 yield _orig
         else:
             for _orig in self._render_no_wraper():
@@ -176,7 +176,7 @@ class TagRender(object):
     #----------------------------------------------------------------------
     def _wrap(self, i):
         """"""
-        return regs.WRAPER_S + i + regs.WRAPER_E
+        return data.WRAPER_START + i + data.WRAPER_END
         
     
     #----------------------------------------------------------------------

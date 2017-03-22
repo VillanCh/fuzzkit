@@ -13,6 +13,7 @@ import types
 from scalpel.lib import regs
 from scalpel.lib import parser
 from scalpel.lib import taglib
+from scalpel.lib import extractor
 from scalpel.lib import data
 
 
@@ -106,7 +107,7 @@ class ScalpelTester(unittest.case.TestCase):
     #----------------------------------------------------------------------
     def test_render(self):
         """"""
-        render = parser.parse_template('ad_S_SENUM(tt)_E_Efausdg_S_SS(tag){4}_E_Efad_S_SX(x1)_E_Efk_S_SENUM(rag)_E_Ealhsidf',
+        render = parser.parse_template('ad_S_SENUM(tt)_E_Efausdg_S_SS(tag){4}:W_E_Efad_S_SX(x1)_E_Efk_S_SENUM(rag)_E_Ealhsidf',
                                        x1='V!LL$NNNSDF^%%&^$$$$^',
                                        rag=data.ASCII_START_128_BASE,
                                        tt=range(333))
@@ -116,8 +117,16 @@ class ScalpelTester(unittest.case.TestCase):
             gen.next()
     
     #----------------------------------------------------------------------
-    def test_scalpel_instance(self):
+    def test_extractor(self):
         """"""
+        _l = [
+            "adf_S_SN()_E_Ea",
+            "HVJGHVBJVULNUS_SBNVULNUS_Ebjbkjbkj"
+        ]
+        
+        for i in _l:
+            for j in extractor.extract_vulnus(i):
+                print j
         
         
 
