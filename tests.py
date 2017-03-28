@@ -148,13 +148,14 @@ class ScalpelTester(unittest.case.TestCase):
         assert '\\u7302' == ue(u'\u7302')
     
     #----------------------------------------------------------------------
-    def test_(self):
+    def test_encoder(self):
         """"""
         print encoder.css_encode_raw('helloworld')
         print encoder.jsunicode_encode_raw('Helloworld')
         print encoder.unicode_encode_raw('hellworld')
         print encoder.htmlentity_encode_raw('hellworld')
-        
+        print encoder.urlencode_encode_raw('hellowrld')
+        print encoder.ascii_encode_raw('adsfasdwqgadd')
         
         
 
