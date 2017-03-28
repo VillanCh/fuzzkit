@@ -24,6 +24,16 @@ ASCIIENCODE_REG = r'\\((x[0-9a-fA-F]{2})|([0-9]{1,3}))'
 
 URLENCODE_REG = r'(\%)([0-9a-fA-F]{2})'
 
+####################################################################################
+## Filter reg
+####################################################################################
+_ADDED_SLASH_TEMPLATE = r'\\({orig})'
+#----------------------------------------------------------------------
+def get_added_slash_reg(orig):
+    """"""
+    return _ADDED_SLASH_TEMPLATE.format(orig=orig)
+
+raise NotImplemented('NOT TEST REGS!')
 
 if __name__ == '__main__':
     unittest.main()
