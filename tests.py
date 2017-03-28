@@ -15,6 +15,8 @@ from scalpel.lib import parser
 from scalpel.lib import taglib
 from scalpel.lib import extractor
 from scalpel.lib import data
+from scalpel.ext import codecs_common
+from scalpel.ext import encoder
 
 
 ########################################################################
@@ -127,6 +129,32 @@ class ScalpelTester(unittest.case.TestCase):
         for i in _l:
             for j in extractor.extract_vulnus(i):
                 print j
+    
+    #----------------------------------------------------------------------
+    def test_unicode_op(self):
+        """"""
+        u2hex = codecs_common.unicode_to_hexstr
+        assert '71' == u2hex('\x71')
+        assert '7302' == u2hex(unichr(0x7302))
+        
+        ufromnum = codecs_common.unicode_build_from_number
+        
+        assert u'\u7302' == ufromnum('7302')
+        assert u'\x03' == ufromnum('03')
+        assert u'\x65' == ufromnum('65')
+        
+        ue = codecs_common.unicode_escape
+        
+        assert '\\u7302' == ue(u'\u7302')
+    
+    #----------------------------------------------------------------------
+    def test_(self):
+        """"""
+        print encoder.css_encode_raw('helloworld')
+        print encoder.jsunicode_encode_raw('Helloworld')
+        print encoder.unicode_encode_raw('hellworld')
+        print encoder.htmlentity_encode_raw('hellworld')
+        
         
         
 
