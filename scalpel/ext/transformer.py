@@ -13,13 +13,27 @@ from . import states
 ########################################################################
 class Change(object):
     """"""
-    pass
+    
+    name = 'Change'
+    
+    #----------------------------------------------------------------------
+    def __repr__(self):
+        """"""
+        return "<{name} (\"{orig}\"-{otype}) => (\"{target}\"={ttype})>".format(
+            orig=self.orig,
+            otype=self.orig_type,
+            target=self.target,
+            ttype=self.state,
+            name=self.name
+        )
     
     
 
 ########################################################################
 class Transformer(Change):
     """"""
+
+    name = 'Transformer'
 
     #----------------------------------------------------------------------
     def __init__(self, orig, orig_type, target, transform_type):
@@ -35,6 +49,8 @@ class Transformer(Change):
 class Filtered(Change):
     """"""
 
+    name = 'Filtered'
+
     #----------------------------------------------------------------------
     def __init__(self, orig, orig_type, target, filter_type):
         """Constructor"""
@@ -47,18 +63,23 @@ class Filtered(Change):
 ########################################################################
 class NoChange(Change):
     """"""
+    
+    name = 'NoChange'    
+    
     #----------------------------------------------------------------------
     def __init__(self, orig, orig_type):
         """"""
         self.orig = orig
         self.orig_type = orig_type
         self.target = orig
-        self.state = 
+        self.state = states.NOCHANGE
 
 ########################################################################
-class UnknowChange(Change):
+class UnknownChange(Change):
     """"""
-
+    
+    name = 'UnknownChange'
+    
     #----------------------------------------------------------------------
     def __init__(self, orig, orig_type, target, target_type):
         """Constructor"""

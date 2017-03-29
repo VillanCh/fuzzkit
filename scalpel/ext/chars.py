@@ -18,7 +18,7 @@ class Char(object):
     """"""
 
     #----------------------------------------------------------------------
-    def __init__(self, orig_char, encoding='utf8', standard=True,\
+    def __init__(self, orig_char, encoding='utf8', standard=True, hexable=True,
                  htmlentity_suffix=';'):
         """Constructor"""
         self._encoding = encoding
@@ -56,7 +56,7 @@ class Char(object):
             self.urlencode = None
             
         try:
-            self.asciicode = encoder.ascii_encode_raw(self._orig_raw, encoding, standard)
+            self.asciicode = encoder.ascii_encode_raw(self._orig_raw, encoding)
         except:
             self.asciicode = None
         
@@ -71,28 +71,28 @@ class Char(object):
         # decode force
         #
         try:
-            self.css_r = decoder.css_decode_from_raw(self._orig_raw)
+            self.css_r = decoder.css_decode_from_raw(self._orig_raw, encoding, hexable)
         except:
             self.css_r = None
             
         try:
-            self.jsunicode_r = decoder.jsunicode_decode_from_raw(self._orig_raw, encoding, standard)
+            self.jsunicode_r = decoder.jsunicode_decode_from_raw(self._orig_raw, encoding, hexable)
         except:
             self.jsunicode_r = None
             
         try:
-            self.urlencode_r = decoder.urlencode_decode_from_raw(self._orig_raw, encoding)
+            self.urlencode_r = decoder.urlencode_decode_from_raw(self._orig_raw, encoding, hexable)
         except:
             self.urlencode_r = None
             
         try:
-            self.asciicode_r = decoder.ascii_decode_from_raw(self._orig_raw, encoding, standard)
+            self.asciicode_r = decoder.ascii_decode_from_raw(self._orig_raw, encoding, hexable)
         except:
             self.asciicode_r = None
         
         try:
             self.htmlentitycode_r = decoder.html_decode_from_raw(self._orig_raw, encoding, \
-                                                           htmlentity_suffix, standard)
+                                                           hexable=hexable)
         except:
             self.htmlentitycode_r = None
         
@@ -146,17 +146,18 @@ class Char(object):
         #     state: SLASHED
         #
         if '\\' == self.orig:
-            if 2 >= list(self.orig).count('\\'):
+            if 2 <= list(_target).count('\\') and _target.endswith('\\' + self.orig):
                 _type = states.SLASHED
                 return transformer.Filtered(self.orig, self.type, _target, _type)
             else:
-                return transformer.UnknowChange(self.orig, self.type, _target, _type)
+                return transformer.UnknownChange(self.orig, self.type, _target, _type)
         else:
-            if 1 >= list(self.orig).count('\\'):
+            if 1 <= list(_target).count('\\') and _target.endswith('\\' + self.orig):
+                #print self.orig
                 _type = states.SLASHED
                 return transformer.Filtered(self.orig, self.type, _target, _type)
             else:
-                return transformer.UnknowChange(self.orig, self.type, _target, _type)
+                return transformer.UnknownChange(self.orig, self.type, _target, _type)
         
         
         

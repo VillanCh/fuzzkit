@@ -42,8 +42,12 @@ def encode_unichar_to_hexlist(char, encoding=DEFAULT_ENCODING):
     """"""
     assert isinstance(char, unicode)
     
-    raw = repr(char.encode(encoding))[1:-1]
+    _r = char.encode(encoding)
+    raw = ''
+    for i in _r:
+        raw = raw + i
     _raw = ''
+    
     if '\\x' not in raw:
         for i in raw:
             _raw = _raw + hex(ord(i)).replace('0x', '\\x')
@@ -58,9 +62,10 @@ def encode_unichar_to_hexlist(char, encoding=DEFAULT_ENCODING):
 def _str2unicode_list(orig, encoding=DEFAULT_ENCODING):
     """"""
     try:
-        return list(unicode(orig))
+        result = list(unicode(orig))
     except:
-        return list(orig.decode(encoding))
+        result = list(orig.decode(encoding))
+    return result
 
 
     
@@ -78,6 +83,9 @@ def css_encode_raw(orig, encoding=DEFAULT_ENCODING, standard=False):
         else:
             return encode_unichar_to_hexlist(x, encoding) + \
                    encode_unichar_to_hexlist(y, encoding)
+    
+    if len(origlist):
+        origlist.insert(0, [])
         
     _hex_list = reduce(_reduce_iter, origlist)
     #_hex_list = map(codecs_common.num_extend, _hex_list)
@@ -127,11 +135,13 @@ def urlencode_encode_raw(orig, encoding=DEFAULT_ENCODING):
         else:
             return encode_unichar_to_hexlist(x, encoding) + \
                    encode_unichar_to_hexlist(y, encoding)
-        
+    if len(origlist):
+        origlist.insert(0, [])
+
     _hex_list = reduce(_reduce_iter, origlist)
 
     _hexstr = ''.join(_hex_list)
-    assert len(_hexstr) % 2 == 0
+    #assert len(_hexstr) % 2 == 0
     
     _hex_list = re.sub(r"(?<=\w)(?=(?:\w\w)+$)", ' ', _hexstr).split()
     
@@ -153,7 +163,9 @@ def ascii_encode_raw(orig, encoding=DEFAULT_ENCODING):
         else:
             return encode_unichar_to_hexlist(x, encoding) + \
                    encode_unichar_to_hexlist(y, encoding)
-        
+    if len(origlist):
+        origlist.insert(0, [])
+    
     _hex_list = reduce(_reduce_iter, origlist)
     _hexstr = ''.join(_hex_list)
     assert len(_hexstr) % 2 == 0

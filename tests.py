@@ -20,6 +20,7 @@ from scalpel.ext import encoder
 from scalpel.ext import decoder
 from scalpel.ext import regs as extargs
 from scalpel.ext import recogizer, states
+from scalpel.ext import chars
 
 
 ########################################################################
@@ -175,12 +176,13 @@ class ScalpelTester(unittest.case.TestCase):
         print 'zhtest', encoder.css_encode_raw('你好')
         
         print 'symbol test'
-        print encoder.css_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')
-        print encoder.ascii_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')
-        print encoder.urlencode_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')
-        print encoder.htmlentity_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')
-        print encoder.unicode_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')
-        print encoder.jsunicode_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')        
+        _test = ',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`'
+        print encoder.css_encode_raw(_test)
+        print encoder.ascii_encode_raw(_test)
+        print encoder.urlencode_encode_raw(_test)
+        print encoder.htmlentity_encode_raw(_test)
+        print encoder.unicode_encode_raw(_test)
+        print encoder.jsunicode_encode_raw(_test)        
         
     #----------------------------------------------------------------------
     def test_decoder(self):
@@ -238,6 +240,40 @@ class ScalpelTester(unittest.case.TestCase):
         self.assertIn(recogizer.recognize_type('&asag;'), states.HTML_ENCODE)
         self.assertIn(recogizer.recognize_type('\\xaf'), states.ASCII_ENCODE)
         self.assertIn(recogizer.recognize_type('%af'), states.URL_ENCODE)
+        
+    #----------------------------------------------------------------------
+    def test_charuse(self):
+        """"""
+        c = chars.Char('[')
+        print c.transformations
+        print c.compare('\[')
+        print c.compare(None)
+        print c.compare('&#91;') #should be recognized as Transformer
+        print c.compare('&#x005b;')
+        print c.compare('%5b')
+        print c.compare('\\91') # slashed error
+        print c.compare('\\x5b')
+        
+        c = chars.Char('\\')
+        print c.transformations
+        print c.compare('\\\\')
+        print c.compare(None)
+        print c.compare('&#92;') #should be recognized as Transformer
+        print c.compare('&#x005c;')
+        print c.compare('%5c')
+        print c.compare('\\92')
+        print c.compare('\\x5c')
+        
+        c = chars.Char('&#x005c;')
+        print c.transformations
+        print c.compare('\\\\')
+        print c.compare(None)
+        print c.compare('&#92;') #should be recognized as Transformer
+        print c.compare('&#x005c;')
+        print c.compare('%5c')
+        print c.compare('\\92')
+        print c.compare('\\x5c')
+        print c.compare('\\')
         
         
 

@@ -22,19 +22,20 @@ def recognize_type(orig, encoding='utf8'):
             _orig = orig.decode(encoding)
         except:
             _orig = ''
-        
-    for type_and_reg in regs.ENCODE_REG_TABLE.items():
-        _type = type_and_reg[0]
-        _reg = type_and_reg[1]
-        
-        if re.match(_reg, orig):
-            return _type
-        
-        if re.match(_reg, _orig):
-            return _type
-        
-    return states.ORDINARY
-        
+    try:
+        for type_and_reg in regs.ENCODE_REG_TABLE.items():
+            _type = type_and_reg[0]
+            _reg = type_and_reg[1]
+            
+            if re.match(_reg, orig):
+                return _type
+            
+            if re.match(_reg, _orig):
+                return _type
+            
+        return states.ORDINARY
+    except:
+        return states.UNKONWN
 
 if __name__ == '__main__':
     unittest.main()
