@@ -15,7 +15,7 @@ UTF8 = 'UTF8'
 
 DEFAULT_ENCODING = UTF8
 
-s = ''
+s = '你'
 
 #----------------------------------------------------------------------
 def unicode_to_hexstr(char, encoding=DEFAULT_ENCODING):
@@ -34,6 +34,12 @@ def unicode_to_hexstr(char, encoding=DEFAULT_ENCODING):
     return hexnum
 
 #----------------------------------------------------------------------
+def unicode_():
+    """"""
+    
+
+
+#----------------------------------------------------------------------
 def unicode_build_from_number(orig, hexable=True):
     """"""
     if isinstance(orig, int):
@@ -43,6 +49,11 @@ def unicode_build_from_number(orig, hexable=True):
             return unichr(eval('0x' + orig))
         else:
             return unichr(int(orig))
+
+#----------------------------------------------------------------------
+def unicode_realized(orig):
+    """"""
+    
 
 #----------------------------------------------------------------------
 def unicode_escape(orig):

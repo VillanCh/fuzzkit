@@ -17,6 +17,7 @@ from scalpel.lib import extractor
 from scalpel.lib import data
 from scalpel.ext import codecs_common
 from scalpel.ext import encoder
+from scalpel.ext import decoder
 
 
 ########################################################################
@@ -150,13 +151,46 @@ class ScalpelTester(unittest.case.TestCase):
     #----------------------------------------------------------------------
     def test_encoder(self):
         """"""
+        print encoder.encode_unichar_to_hexlist(u'你你好')
+        print encoder.encode_unichar_to_hexlist(u'你')
+        print encoder.encode_unichar_to_hexlist(u'你你好', 'gbk')        
+        print encoder.encode_unichar_to_hexlist(u'好', 'gbk')        
+        print encoder.encode_unichar_to_hexlist(u's')
+        print encoder.encode_unichar_to_hexlist(u'ssdaf')
+        print encoder.encode_unichar_to_hexlist(u'\x45')
         print encoder.css_encode_raw('helloworld')
+        print encoder.css_encode_raw('helloworld你好')
         print encoder.jsunicode_encode_raw('Helloworld')
+        print encoder.jsunicode_encode_raw('Helloworld你好')
         print encoder.unicode_encode_raw('hellworld')
+        print encoder.unicode_encode_raw('hellworld你好')
         print encoder.htmlentity_encode_raw('hellworld')
+        print encoder.htmlentity_encode_raw('hellworld你好')
         print encoder.urlencode_encode_raw('hellowrld')
+        print encoder.urlencode_encode_raw('hellowrld你好')
         print encoder.ascii_encode_raw('adsfasdwqgadd')
+        print encoder.ascii_encode_raw('adsfasdwqgadd你好')
+        print 'zhtest', encoder.css_encode_raw('你好')
         
+    #----------------------------------------------------------------------
+    def test_decoder(self):
+        """"""
+        print decoder.css_decode_from_raw(encoder.css_encode_raw('你好'))
+        print decoder.css_decode_from_raw(encoder.css_encode_raw('Hello你好'))
+        print decoder.jsunicode_decode_from_raw(encoder.jsunicode_encode_raw('HelloWorld'))
+        print decoder.jsunicode_decode_from_raw(encoder.jsunicode_encode_raw('HelloWorld你好'))
+        print decoder.html_decode_from_raw(encoder.htmlentity_encode_raw('HelloWorld'))
+        print decoder.html_decode_from_raw(encoder.htmlentity_encode_raw('HelloWorld你好'))
+        print decoder.unicode_decode_from_raw(encoder.unicode_encode_raw('HelloWorld'))
+        print decoder.unicode_decode_from_raw(encoder.unicode_encode_raw('HelloWorld你好'))
+        print decoder.urlencode_decode_from_raw(encoder.urlencode_encode_raw('HelloWorld'))
+        print decoder.urlencode_decode_from_raw(encoder.urlencode_encode_raw('HelloWorld你好'))
+        print decoder.ascii_decode_from_raw(encoder.ascii_encode_raw('helloworld'))
+        print decoder.ascii_decode_from_raw(encoder.ascii_encode_raw('helloworld你好'))
+
+    #----------------------------------------------------------------------
+    def test_extregs(self):
+        """"""
         
 
 if __name__ == '__main__':

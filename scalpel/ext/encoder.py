@@ -38,12 +38,49 @@ URLENCODE_DIVIDER = '%'
 PERCENT_DIVIDER = URLENCODE_DIVIDER
 ASCII_DIVIDER = '\\x'
 
+#----------------------------------------------------------------------
+def encode_unichar_to_hexlist(char, encoding=DEFAULT_ENCODING):
+    """"""
+    assert isinstance(char, unicode)
+    
+    raw = repr(char.encode(encoding))[1:-1]
+    _raw = ''
+    if '\\x' not in raw:
+        for i in raw:
+            _raw = _raw + hex(ord(i)).replace('0x', '\\x')
+        raw = _raw
+        
+    return filter(lambda x: False if x == '' or x == None else True,
+                  raw.split('\\x'))
+    
+    
+
+#----------------------------------------------------------------------
+def _str2unicode_list(orig, encoding=DEFAULT_ENCODING):
+    """"""
+    try:
+        return list(unicode(orig))
+    except:
+        return list(orig.decode(encoding))
+
+
+    
 
 #----------------------------------------------------------------------
 def css_encode_raw(orig, encoding=DEFAULT_ENCODING, standard=False):
     """"""
-    origlist = list(orig)
-    _hex_list = map(lambda x: codecs_common.unicode_to_hexstr(x, encoding), origlist)
+    
+    origlist = _str2unicode_list(orig, encoding)
+    
+    def _reduce_iter(x, y):
+        """"""
+        if isinstance(x, list):
+            return x + encode_unichar_to_hexlist(y, encoding)
+        else:
+            return encode_unichar_to_hexlist(x, encoding) + \
+                   encode_unichar_to_hexlist(y, encoding)
+        
+    _hex_list = reduce(_reduce_iter, origlist)
     #_hex_list = map(codecs_common.num_extend, _hex_list)
     
     def _p(c):
@@ -54,7 +91,7 @@ def css_encode_raw(orig, encoding=DEFAULT_ENCODING, standard=False):
 #----------------------------------------------------------------------
 def jsunicode_encode_raw(orig, encoding=DEFAULT_ENCODING, standard=True):
     """"""
-    origlist = list(orig)
+    origlist = _str2unicode_list(orig, encoding)
     _hex_list = map(lambda x: codecs_common.unicode_to_hexstr(x, encoding), origlist)
     
     if standard:
@@ -69,8 +106,9 @@ def jsunicode_encode_raw(orig, encoding=DEFAULT_ENCODING, standard=True):
 #----------------------------------------------------------------------
 def unicode_encode_raw(orig, encoding=DEFAULT_ENCODING, standard=True):
     """"""
-    origlist = list(orig)
+    origlist = _str2unicode_list(orig, encoding)
     _hex_list = map(lambda x: codecs_common.unicode_to_hexstr(x, encoding), origlist)
+
     if standard:
         _hex_list = map(codecs_common.num_extend, _hex_list)
     def _p(c):
@@ -82,8 +120,17 @@ def unicode_encode_raw(orig, encoding=DEFAULT_ENCODING, standard=True):
 #----------------------------------------------------------------------
 def urlencode_encode_raw(orig, encoding=DEFAULT_ENCODING):
     """"""
-    origlist = list(orig)
-    _hex_list = map(lambda x: codecs_common.unicode_to_hexstr(x, encoding), origlist)
+    origlist = _str2unicode_list(orig, encoding)
+    def _reduce_iter(x, y):
+        """"""
+        if isinstance(x, list):
+            return x + encode_unichar_to_hexlist(y, encoding)
+        else:
+            return encode_unichar_to_hexlist(x, encoding) + \
+                   encode_unichar_to_hexlist(y, encoding)
+        
+    _hex_list = reduce(_reduce_iter, origlist)
+
     _hexstr = ''.join(_hex_list)
     assert len(_hexstr) % 2 == 0
     
@@ -99,8 +146,16 @@ def urlencode_encode_raw(orig, encoding=DEFAULT_ENCODING):
 #----------------------------------------------------------------------
 def ascii_encode_raw(orig, encoding=DEFAULT_ENCODING):
     """"""
-    origlist = list(orig)
-    _hex_list = map(lambda x: codecs_common.unicode_to_hexstr(x, encoding), origlist)
+    origlist = _str2unicode_list(orig, encoding)
+    def _reduce_iter(x, y):
+        """"""
+        if isinstance(x, list):
+            return x + encode_unichar_to_hexlist(y, encoding)
+        else:
+            return encode_unichar_to_hexlist(x, encoding) + \
+                   encode_unichar_to_hexlist(y, encoding)
+        
+    _hex_list = reduce(_reduce_iter, origlist)
     _hexstr = ''.join(_hex_list)
     assert len(_hexstr) % 2 == 0
     
@@ -117,8 +172,9 @@ def ascii_encode_raw(orig, encoding=DEFAULT_ENCODING):
 #----------------------------------------------------------------------
 def htmlentity_encode_raw(orig, encoding=DEFAULT_ENCODING, suffix=';', standard=True):
     """"""
-    origlist = list(orig)
+    origlist = _str2unicode_list(orig, encoding)
     _hex_list = map(lambda x: codecs_common.unicode_to_hexstr(x, encoding), origlist)
+
     if standard:
         _hex_list = map(codecs_common.num_extend, _hex_list)
     def _html_char_encode(char):

@@ -11,8 +11,8 @@ import unittest
 ####################################################################################
 ## Encode reg
 ####################################################################################
-HTMLENCODE_REG = r'(\&\#)([\w]+)(;)'
-HTMLENCODE_REG_LOOSE = r'(\&\#)([\w]+)(;?)'
+HTMLENCODE_REG = r'(\&\#?)([\w]+)(;)'
+HTMLENCODE_REG_LOOSE = r'(\&\#?)([\w]+)(;?)'
 
 JSUNICODE_REG = r'(\\u)([0-9a-fA-F]{4})'
 JSUNICODE_REG_LOOSE = r'(\\u)([0-9a-fA-F]{1,4})'
@@ -33,7 +33,7 @@ def get_added_slash_reg(orig):
     """"""
     return _ADDED_SLASH_TEMPLATE.format(orig=orig)
 
-raise NotImplemented('NOT TEST REGS!')
+#raise NotImplemented('NOT TEST REGS!')
 
 if __name__ == '__main__':
     unittest.main()
