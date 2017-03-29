@@ -12,8 +12,7 @@ import re
 
 from ..lib import data
 from . import codecs_common
-
-
+from . import states
 
 #
 # URL encoder
@@ -188,6 +187,15 @@ def htmlentity_encode_raw(orig, encoding=DEFAULT_ENCODING, suffix=';', standard=
     return ''.join(_hex_list)
 
 
+
+
+ENCODE_FUNCION_TABLE = {
+    states.CSS_ENCODE: css_encode_raw,
+    states.JSUNICODE_ENCODE: jsunicode_encode_raw,
+    states.URL_ENCODE: urlencode_encode_raw,
+    states.ASCII_ENCODE: ascii_encode_raw,
+    states.HTML_ENCODE: htmlentity_encode_raw
+}
 
 if __name__ == '__main__':
     unittest.main()

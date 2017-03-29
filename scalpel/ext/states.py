@@ -9,18 +9,28 @@
 import unittest
 
 ####################################################################################
+## common
+####################################################################################
+ORDINARY = 'ordinary'
+
+####################################################################################
 ## encode state
 ####################################################################################
-HTML = 'html'
-CSS = 'css'
-JAVASCRIPT = 'javascript'
-URL = 'url'
-ASCII = 'ascii'
+HTML_ENCODE = 'html'
+CSS_ENCODE = 'css'
+JSUNICODE_ENCODE = 'javascript'
+URL_ENCODE = 'url'
+ASCII_ENCODE = 'ascii'
+
+ASCII_LIKE = tuple([CSS_ENCODE, ASCII_ENCODE])
+UNICODE_LIKE = tuple([JSUNICODE_ENCODE,])
 
 ####################################################################################
 ## Filtered
 ####################################################################################
-ADD_SLASHED
+SLASHED = 'slashed'
+VANISH = 'vanish'
+
 #----------------------------------------------------------------------
 def get_add_slashed_reg():
     """"""

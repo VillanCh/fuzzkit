@@ -18,6 +18,8 @@ from scalpel.lib import data
 from scalpel.ext import codecs_common
 from scalpel.ext import encoder
 from scalpel.ext import decoder
+from scalpel.ext import regs as extargs
+from scalpel.ext import recogizer, states
 
 
 ########################################################################
@@ -172,6 +174,14 @@ class ScalpelTester(unittest.case.TestCase):
         print encoder.ascii_encode_raw('adsfasdwqgadd你好')
         print 'zhtest', encoder.css_encode_raw('你好')
         
+        print 'symbol test'
+        print encoder.css_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')
+        print encoder.ascii_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')
+        print encoder.urlencode_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')
+        print encoder.htmlentity_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')
+        print encoder.unicode_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')
+        print encoder.jsunicode_encode_raw(',./<>?;:\'"[]{}-=_+()&*%^#$!@`~`')        
+        
     #----------------------------------------------------------------------
     def test_decoder(self):
         """"""
@@ -191,6 +201,44 @@ class ScalpelTester(unittest.case.TestCase):
     #----------------------------------------------------------------------
     def test_extregs(self):
         """"""
+        #
+        # list all html entity char!
+        #
+        self.assertEqual(1, len(re.findall(extargs.HTMLENCODE_REG, '&#3452;')))
+        self.assertEqual(1, len(re.findall(extargs.HTMLENCODE_REG_LOOSE, '&#3452')))
+        self.assertEqual(1, len(re.findall(extargs.HTMLENCODE_REG, '&amp;')))
+        self.assertEqual(1, len(re.findall(extargs.HTMLENCODE_REG_LOOSE, '&ampasdfa')))
+        
+        self.assertEqual(1, len(re.findall(extargs.JSUNICODE_REG, '\\u3467')))
+        self.assertEqual(0, len(re.findall(extargs.JSUNICODE_REG, '\\u347')))
+        self.assertEqual(1, len(re.findall(extargs.JSUNICODE_REG, '\\u34674')))
+        
+        self.assertEqual(1, len(re.findall(extargs.CSSENCODE_REG, '\\34674')))
+        self.assertEqual(0, len(re.findall(extargs.CSSENCODE_REG, '\\4')))
+        
+        self.assertEqual(1, len(re.findall(extargs.ASCIIENCODE_REG, '\\x34674')))
+        self.assertEqual(0, len(re.findall(extargs.ASCIIENCODE_REG, '\\x3')))
+        self.assertEqual(1, len(re.findall(extargs.ASCIIENCODE_REG, '\\3')))
+        
+        self.assertEqual(0, len(re.findall(extargs.URLENCODE_REG, '%f')))
+        self.assertEqual(1, len(re.findall(extargs.URLENCODE_REG, '%ff')))
+        self.assertEqual(1, len(re.findall(extargs.URLENCODE_REG, '%faf')))
+        
+        self.assertEqual(1, len(re.findall(extargs.SLASH_REG, 'asdfasd\\&%adfa')))
+        self.assertEqual(2, len(re.findall(extargs.SLASH_REG, 'asdfasd\\[\\&%adfa')))
+        self.assertEqual(2, len(re.findall(extargs.SLASH_REG, 'asdfasd\\[\\&%adfa')))
+        
+    #----------------------------------------------------------------------
+    def test_recognizer(self):
+        """"""
+        self.assertIn(recogizer.recognize_type('\\3456'), states.ASCII_LIKE)
+        self.assertIn(recogizer.recognize_type('\\af'), states.ASCII_LIKE)
+        self.assertIn(recogizer.recognize_type('\\u2345'), states.UNICODE_LIKE)
+        self.assertIn(recogizer.recognize_type('&#24534'), states.HTML_ENCODE)
+        self.assertIn(recogizer.recognize_type('&asag;'), states.HTML_ENCODE)
+        self.assertIn(recogizer.recognize_type('\\xaf'), states.ASCII_ENCODE)
+        self.assertIn(recogizer.recognize_type('%af'), states.URL_ENCODE)
+        
         
 
 if __name__ == '__main__':

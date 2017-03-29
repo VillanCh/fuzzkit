@@ -8,6 +8,7 @@
 
 import unittest
 from .encoder import DEFAULT_ENCODING
+from . import states
 
 #----------------------------------------------------------------------
 def _decode_unicode(raw, divider, callback, encoding=DEFAULT_ENCODING, hexable=True):
@@ -136,6 +137,15 @@ def html_decode_from_raw(orig, encoding=DEFAULT_ENCODING, hexable=True):
     
     return _decode_unicode(orig, _divider, _cb, encoding, hexable)
 
+
+
+DECODE_FUNCTION_TABLE = {
+    states.CSS_ENCODE: css_decode_from_raw,
+    states.JSUNICODE_ENCODE: jsunicode_decode_from_raw,
+    states.URL_ENCODE: urlencode_decode_from_raw,
+    states.ASCII_ENCODE: ascii_decode_from_raw,
+    states.HTML_ENCODE: html_decode_from_raw
+}
 
 if __name__ == '__main__':
     unittest.main()

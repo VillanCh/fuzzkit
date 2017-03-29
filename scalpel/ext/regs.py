@@ -8,32 +8,37 @@
 
 import unittest
 
+from . import states
+
 ####################################################################################
 ## Encode reg
 ####################################################################################
-HTMLENCODE_REG = r'(\&\#?)([\w]+)(;)'
+HTMLENCODE_REG = r'(\&)(\#[0-9]+|\#x[0-9a-fA-F]+|[\w]+\;)(;)?'
 HTMLENCODE_REG_LOOSE = r'(\&\#?)([\w]+)(;?)'
 
-JSUNICODE_REG = r'(\\u)([0-9a-fA-F]{4})'
-JSUNICODE_REG_LOOSE = r'(\\u)([0-9a-fA-F]{1,4})'
+JSUNICODE_REG = '(\\\\u)([0-9a-fA-F]{4})'
+JSUNICODE_REG_LOOSE = r'(\\\\u)([0-9a-fA-F]{1,4})'
 
-CSSENCODE_REG = r'(\\)([0-9a-fA-F]{2,4})'
-CSSENCODE_REG = r'(\\)([0-9a-fA-F]{2,4})'
+CSSENCODE_REG = '(\\\\)([0-9a-fA-F]{2})'
+CSSENCODE_REG_LOOSE = '(\\\\)([0-9a-fA-F]{2,4})'
 
-ASCIIENCODE_REG = r'\\((x[0-9a-fA-F]{2})|([0-9]{1,3}))'
+ASCIIENCODE_REG = '(\\\\)((x[0-9a-fA-F]{2})|([0-9]{1,3}))'
 
-URLENCODE_REG = r'(\%)([0-9a-fA-F]{2})'
+URLENCODE_REG = '(\%)([0-9a-fA-F]{2})'
+
+ENCODE_REG_TABLE = {
+    states.HTML_ENCODE: HTMLENCODE_REG,
+    states.ASCII_ENCODE: ASCIIENCODE_REG,
+    states.CSS_ENCODE: CSSENCODE_REG,
+    states.JSUNICODE_ENCODE: JSUNICODE_REG,
+    states.URL_ENCODE: URLENCODE_REG
+}
 
 ####################################################################################
 ## Filter reg
 ####################################################################################
-_ADDED_SLASH_TEMPLATE = r'\\({orig})'
-#----------------------------------------------------------------------
-def get_added_slash_reg(orig):
-    """"""
-    return _ADDED_SLASH_TEMPLATE.format(orig=orig)
 
-#raise NotImplemented('NOT TEST REGS!')
+SLASH_REG = '\\\\'
 
 if __name__ == '__main__':
     unittest.main()
