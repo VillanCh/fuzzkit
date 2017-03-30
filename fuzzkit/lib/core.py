@@ -9,8 +9,8 @@
 import unittest
 import types
 import abc
-from . import data
-from . import regs
+
+from . import conf
 
 from g3ar.utils.iter_utils import iter_mix
 
@@ -121,68 +121,101 @@ class TagRender(object):
     """"""
 
     #----------------------------------------------------------------------
-    def __init__(self, orig):
+    def __init__(self, orig, wraper_start=conf.WRAPER_START, wraper_end=conf.WRAPER_END):
         """Constructor"""
+        
+        #
+        # init conf
+        #
+        self._wraper_start = wraper_start
+        self._wraper_end = wraper_end
+        
         
         self._orig = orig
         
-        self._replace_table = {}
-        self._replace_table_with_wraper = {}
+        self._wraper_flag = {}
+        
+        self._replace_table_without_enum = {}
+        self._replace_table_with_enum = {}
+        
+        self._finished_empty_finishedtable = False
     
     #----------------------------------------------------------------------
     def feed(self, raw, tag, wraperable=False):
         """"""
         assert isinstance(raw, types.StringTypes)
+        self._wraper_flag[tag] = wraperable
         
-        if wraperable:
-            self._replace_table_with_wraper[raw] = tag
-            self._replace_keys_with_wraper = self._replace_table_with_wraper.keys()
+        if tag._type == 'ENUM':
+            self._replace_table_with_enum[raw] = tag
+            self._replace_keys_with_enum = self._replace_table_with_enum.keys()
         else:
-            self._replace_table[raw] = tag
-            self._replace_keys = self._replace_table.keys()
+            self._replace_table_without_enum[raw] = tag
+            self._replace_keys_without_enum = self._replace_table_without_enum.keys()
+            
+        
     
     #----------------------------------------------------------------------
-    def _render_no_wraper(self):
+    def _render_without_enums(self, rendered_by_wraper):
         """"""
-        _ksn = self._replace_table.values()
+        _ksn = self._replace_table_without_enum.values()
         _ksn = tuple(_ksn)
-        if _ksn == tuple():
-            raise GeneratorExit
-        nw_items = iter_mix(*_ksn)
-        for _i in nw_items:
-            _ret = self._orig
-            for i in range(len(self._replace_table)):
-                _ret = _ret.replace(self._replace_keys[i], _i[i])
-            yield _ret
-    
-    #----------------------------------------------------------------------
-    def _render_wraper(self):
-        """"""
-        _ks = self._replace_table_with_wraper.values()
-        _ks = tuple(_ks)
-        if _ks == tuple():
-            w_items = []
-        else:   
-            w_items = iter_mix(*_ks)
-        for _i in w_items:
-            for _orig in self._render_no_wraper():
-                for index in range(len(self._replace_table_with_wraper)):
-                    _orig = _orig.replace(self._replace_keys_with_wraper[index], self._wrap(_i[index]))
-                yield _orig
-        else:
-            for _orig in self._render_no_wraper():
-                yield _orig
+        
+        
+        for i in self._replace_table_without_enum:
+            _target = self._replace_table_without_enum[i].value
+            _tag = self._replace_table_without_enum[i]
+            if self._wraper_flag[_tag]:
+                rendered_by_wraper = rendered_by_wraper.replace(i, self._wrap(_target))
+            else:
+                rendered_by_wraper = rendered_by_wraper.replace(i, _target)
+
+            
+        return rendered_by_wraper
+
     
     #----------------------------------------------------------------------
     def _wrap(self, i):
         """"""
-        return data.WRAPER_START + i + data.WRAPER_END
+        return self._wraper_start + i + self._wraper_end
         
     
     #----------------------------------------------------------------------
     def render(self):
         """"""
-        return self._render_wraper()
+        return self._render()
+    
+    #----------------------------------------------------------------------
+    def _render(self):
+        """"""
+        for _pre in self._render_with_enums():
+            yield self._render_without_enums(_pre)
+    
+    #----------------------------------------------------------------------
+    def _render_with_enums(self):
+        """"""
+        #
+        # render with 
+        #
+        _ks = self._replace_table_with_enum.values()
+        _ks = tuple(_ks)
+        if _ks == tuple():
+            yield self._orig
+        else:   
+            w_items = iter_mix(*_ks)
+            
+        for _mixer in w_items:
+            _ret = self._orig
+            for index in range(len(self._replace_table_with_enum)):
+                _tag = self._replace_table_with_enum[self._replace_keys_with_enum[index]]
+                if self._wraper_flag[_tag]:
+                    _ret = _ret.replace(self._replace_keys_with_enum[index],
+                                        self._wrap(_mixer[index]))
+                else:
+                    _ret = _ret.replace(self._replace_keys_with_enum[index],
+                                        _mixer[index])
+            yield _ret
+            
     
 
 if __name__ == '__main__':

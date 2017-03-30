@@ -10,21 +10,22 @@ import unittest
 import re
 import types
 
-from scalpel.lib import regs
-from scalpel.lib import parser
-from scalpel.lib import taglib
-from scalpel.lib import extractor
-from scalpel.lib import data
-from scalpel.ext import codecs_common
-from scalpel.ext import encoder
-from scalpel.ext import decoder
-from scalpel.ext import regs as extargs
-from scalpel.ext import recogizer, states
-from scalpel.ext import chars
+from fuzzkit.lib import regs
+from fuzzkit.lib import parser
+from fuzzkit.lib import taglib
+from fuzzkit.lib import extractor
+from fuzzkit.lib import data
+from fuzzkit.ext import codecs_common
+from fuzzkit.ext import encoder
+from fuzzkit.ext import decoder
+from fuzzkit.ext import regs as extargs
+from fuzzkit.ext import recogizer, states
+from fuzzkit.ext import chars
+from fuzzkit.fuzzkit import FuzzerConfig, Fuzzer
 
 
 ########################################################################
-class ScalpelTester(unittest.case.TestCase):
+class FuzzkitTester(unittest.case.TestCase):
     """"""
 
     #----------------------------------------------------------------------
@@ -107,7 +108,8 @@ class ScalpelTester(unittest.case.TestCase):
         
         raw = 'asdfasdfaHHHHHH_SX(asd){1,3}HHHHHH_EsdfaaM<L:?<"OP{IO"P{K:HKJ}}>>dfa'
         #print re.findall(regs.TEMPLATE_PATTERN, raw)
-        for i in re.findall(regs.TEMPLATE_PATTERN, raw):
+        for i in re.findall(regs.get_template_pattern(FuzzerConfig.VULNUS_START,
+                                                      FuzzerConfig.VULNUS_END), raw):
             print i
     
     #----------------------------------------------------------------------
@@ -116,11 +118,12 @@ class ScalpelTester(unittest.case.TestCase):
         render = parser.parse_template('ad_S_SENUM(tt)_E_Efausdg_S_SS(tag){4}:W_E_Efad_S_SX(x1)_E_Efk_S_SENUM(rag)_E_Ealhsidf',
                                        x1='V!LL$NNNSDF^%%&^$$$$^',
                                        rag=data.ASCII_START_128_BASE,
-                                       tt=range(333))
+                                       tt=range(333),
+                                       fuzzkitconfig=FuzzerConfig)
         
         gen = render.render()
-        for i in range(666):
-            gen.next()
+        for i in range(222):
+            print gen.next()
     
     #----------------------------------------------------------------------
     def test_extractor(self):
@@ -131,7 +134,7 @@ class ScalpelTester(unittest.case.TestCase):
         ]
         
         for i in _l:
-            for j in extractor.extract_vulnus(i):
+            for j in extractor.extract_vulnus(i, FuzzerConfig.WRAPER_START, FuzzerConfig.WRAPER_END):
                 print j
     
     #----------------------------------------------------------------------
@@ -275,7 +278,12 @@ class ScalpelTester(unittest.case.TestCase):
         print c.compare('\\x5c')
         print c.compare('\\')
         
+    #----------------------------------------------------------------------
+    def test_fuzzer(self):
+        """"""
         
+        for i in Fuzzer(template='_S_SENUM(x):W_E_E', x=map(str, range(444))):
+            print i
 
 if __name__ == '__main__':
     unittest.main()
