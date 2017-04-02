@@ -14,6 +14,7 @@ from . import data
 from . import taglib
 from . import regs
 from . import core
+from . import conf
 from .exceptions import UndefinedValue
 
 
@@ -50,7 +51,7 @@ def _parse_suffix(suffix):
     
 
 #----------------------------------------------------------------------
-def parse_template(raw, **keyword_args):
+def parse_template(raw, fuzzkitconfig, **keyword_args):
     """"""
     #
     # accept raw
@@ -60,15 +61,16 @@ def parse_template(raw, **keyword_args):
     #
     # parse
     #
-    for i in re.findall(pattern=regs.TEMPLATE_PATTERN, string=raw):
+    for i in re.findall(pattern=regs.get_template_pattern(fuzzkitconfig.VULNUS_START, fuzzkitconfig.VULNUS_END), string=raw):
         _suffix = i[_TAG_SUFFIX]
         _options = _parse_suffix(_suffix)
-        render.feed(raw=i[_RAW], tag=_build_tag(i, **keyword_args), wraperable=_options.get(data.WRAPERED))
+        render.feed(raw=i[_RAW],
+                    tag=_build_tag(i, fuzzkitconfig=fuzzkitconfig, **keyword_args), wraperable=_options.get(data.WRAPERED))
     
     return render
 
 #----------------------------------------------------------------------
-def _build_tag(reg_tuple, **var):
+def _build_tag(reg_tuple, fuzzkitconfig, **var):
     """"""
     # 
     # get the part of tag!
@@ -98,10 +100,10 @@ def _build_tag(reg_tuple, **var):
         # build N/NS/NC/S/C
         #
         if _type == data.N:
-            _p1 = _p1 if _p1 != '' else data.N_DEFAULT_MIN
-            _p2 = _p2 if _p2 != '' else data.N_DEFAULT_MAX
+            _p1 = _p1 if _p1 != '' else fuzzkitconfig.N_DEFAULT_MIN
+            _p2 = _p2 if _p2 != '' else fuzzkitconfig.N_DEFAULT_MAX
         else:
-            _p1 = _p1 if _p1 != '' else data.DEFAULT_LENGTH[_type]
+            _p1 = _p1 if _p1 != '' else fuzzkitconfig.DEFAULT_LENGTH[_type]
             _p2 = _p2 if _p2 != '' else None
         _tag = TAG_CLASS_TABLE[_type](_name, _p1, _p2)
     

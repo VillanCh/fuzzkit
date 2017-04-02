@@ -123,7 +123,8 @@ class FuzzkitTester(unittest.case.TestCase):
         
         gen = render.render()
         for i in range(222):
-            print gen.next()
+            #print gen.next()
+            pass
     
     #----------------------------------------------------------------------
     def test_extractor(self):
@@ -135,7 +136,8 @@ class FuzzkitTester(unittest.case.TestCase):
         
         for i in _l:
             for j in extractor.extract_vulnus(i, FuzzerConfig.WRAPER_START, FuzzerConfig.WRAPER_END):
-                print j
+                #print j
+                pass
     
     #----------------------------------------------------------------------
     def test_unicode_op(self):
@@ -250,7 +252,7 @@ class FuzzkitTester(unittest.case.TestCase):
         c = chars.Char('[')
         print c.transformations
         print c.compare('\[')
-        print c.compare(None)
+        print c.compare('')
         print c.compare('&#91;') #should be recognized as Transformer
         print c.compare('&#x005b;')
         print c.compare('%5b')
@@ -260,7 +262,7 @@ class FuzzkitTester(unittest.case.TestCase):
         c = chars.Char('\\')
         print c.transformations
         print c.compare('\\\\')
-        print c.compare(None)
+        print c.compare('')
         print c.compare('&#92;') #should be recognized as Transformer
         print c.compare('&#x005c;')
         print c.compare('%5c')
@@ -282,8 +284,20 @@ class FuzzkitTester(unittest.case.TestCase):
     def test_fuzzer(self):
         """"""
         
-        for i in Fuzzer(template='_S_SENUM(x):W_E_E', x=map(str, range(444))):
-            print i
+        for i in Fuzzer(template='_S_SENUM(x):W_E_E_S_SN(zz)_E_E_S_SC(sda)_E_E_S_SENUM(xx)_E_E', x=map(str, range(444)),
+                        xx=map(str, range(330))):
+            ##print i
+            pass
+            
+        for i in Fuzzer(template='_S_SX(x):W_E_E', x=map(str, range(444))):
+            #print i
+            pass
+        
+        for i in Fuzzer(template='_S_SX(x)_E_E', x=map(str, range(444))):
+            pass
+        
+        for i in Fuzzer('_S_SS(x){4,9}_E_E,_S_SS(y){5,7}:W_E_E'):
+            pass
 
 if __name__ == '__main__':
     unittest.main()

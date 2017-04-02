@@ -15,8 +15,6 @@ UTF8 = 'UTF8'
 
 DEFAULT_ENCODING = UTF8
 
-s = '你'
-
 #----------------------------------------------------------------------
 def unicode_to_hexstr(char, encoding=DEFAULT_ENCODING):
     """"""

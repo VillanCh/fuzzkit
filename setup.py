@@ -13,7 +13,7 @@ packages = find_packages()
 
 requires = ['g3ar',]
 
-version = '0.3.1'
+version = '0.3.5'
 
 #
 # LOAD README.md

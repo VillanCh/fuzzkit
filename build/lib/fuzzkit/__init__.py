@@ -6,6 +6,16 @@
   Created: 03/29/17
 """
 
-from ext.chars import Char
-from lib.extractor import extract_vulnus
-from lib.parser import parse_template
+from .ext.chars import Char
+from .fuzzkit import Fuzzer
+from .fuzzkit import FuzzerConfig
+from .fuzzkit import Encoder, Decoder
+
+#
+# change define
+#
+from .ext.transformer import Change
+from .ext.transformer import Transformer
+from .ext.transformer import UnknownChange
+from .ext.transformer import NoChange
+from .ext.transformer import Filtered

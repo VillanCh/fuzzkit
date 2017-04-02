@@ -164,6 +164,8 @@ class TagRender(object):
         
         for i in self._replace_table_without_enum:
             _target = self._replace_table_without_enum[i].value
+            if not isinstance(_target, types.StringTypes):
+                _target = str(_target)
             _tag = self._replace_table_without_enum[i]
             if self._wraper_flag[_tag]:
                 rendered_by_wraper = rendered_by_wraper.replace(i, self._wrap(_target))
@@ -177,7 +179,7 @@ class TagRender(object):
     #----------------------------------------------------------------------
     def _wrap(self, i):
         """"""
-        return self._wraper_start + i + self._wraper_end
+        return self._wraper_start + str(i) + self._wraper_end
         
     
     #----------------------------------------------------------------------
@@ -204,17 +206,17 @@ class TagRender(object):
         else:   
             w_items = iter_mix(*_ks)
             
-        for _mixer in w_items:
-            _ret = self._orig
-            for index in range(len(self._replace_table_with_enum)):
-                _tag = self._replace_table_with_enum[self._replace_keys_with_enum[index]]
-                if self._wraper_flag[_tag]:
-                    _ret = _ret.replace(self._replace_keys_with_enum[index],
-                                        self._wrap(_mixer[index]))
-                else:
-                    _ret = _ret.replace(self._replace_keys_with_enum[index],
-                                        _mixer[index])
-            yield _ret
+            for _mixer in w_items:
+                _ret = self._orig
+                for index in range(len(self._replace_table_with_enum)):
+                    _tag = self._replace_table_with_enum[self._replace_keys_with_enum[index]]
+                    if self._wraper_flag[_tag]:
+                        _ret = _ret.replace(self._replace_keys_with_enum[index],
+                                            self._wrap(str(_mixer[index])))
+                    else:
+                        _ret = _ret.replace(self._replace_keys_with_enum[index],
+                                            str(_mixer[index]))
+                yield _ret
             
     
 

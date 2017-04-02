@@ -8,7 +8,12 @@
 
 import unittest
 from .lib import parser
+from .ext import encoder
+from .ext import decoder
 from .lib import data
+
+Encoder = encoder
+Decoder = decoder
 
 ########################################################################
 class FuzzerConfig:
@@ -37,7 +42,7 @@ class FuzzerConfig:
     
 
 ########################################################################
-class Fuzzer():
+class Fuzzer(object):
     """"""
 
     #----------------------------------------------------------------------
@@ -62,8 +67,10 @@ class Fuzzer():
     def next(self):
         """"""
         return self._gen.next()
-        
-        
+
+
+
+
         
     
     

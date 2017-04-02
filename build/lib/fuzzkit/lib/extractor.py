@@ -10,14 +10,15 @@ import unittest
 import re
 
 from . import regs
+from . import conf
 
 _TAG_INDEX = 1
 _RSP_INDEX = 1
 
 #----------------------------------------------------------------------
-def extract_vulnus(raw):
+def extract_vulnus(raw, wraper_start, wraper_end):
     """"""
-    for i in re.findall(regs.EXTRACT_RSP_PATTERN, string=raw):
+    for i in re.findall(regs.get_extract_rsp_pattern(wraper_start, wraper_end), string=raw):
         yield i
     
 
