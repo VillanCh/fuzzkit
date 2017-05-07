@@ -757,5 +757,7 @@ HTML_TAG_LIST = [
     "wbr",
     "xmp",
 ]
+
+ELEMENT_LISTS = HTML_TAG_LIST
     
     

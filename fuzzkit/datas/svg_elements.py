@@ -9240,3 +9240,5 @@ SVG_TAG_LISTS = [
     "view",
     "vkern",
 ]
+
+ELEMENT_LIST = SVG_TAG_LISTS

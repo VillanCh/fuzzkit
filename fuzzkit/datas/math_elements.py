@@ -386,3 +386,5 @@ MATH_TAG_LIST = [
     "annotation",
     "annotation-xml",
 ]
+
+ELEMENT_LIST = MATH_TAG_LIST
